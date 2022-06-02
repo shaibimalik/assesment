@@ -3,52 +3,105 @@
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Index59</title>
-    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            debugger
-            var ctx = $("#myChart");
-
-            var lineOptions = {
-                responsive: false
-            }
-
-            $("#btn").click(function () {
-                $.ajax({
-                    type: "POST",
-                    url: "GetChartData",
-                    //data: "{}",
-                    dataType: "json",
-                    cache: true,
-                    success: function (Result) {
-                        //drawChart(JSON.stringify(Result.data));
-                        var ap = "dh";
-                        var chartInstance = new Chart(ctx,
-                            {
-                                type: 'line',
-                                data: Result.data,
-                                options: lineOptions
-                            });
-                    },
-                    error: function (Result) {
-                        alert("Error");
-                    }
-                });
-
-            })
-        })
-    </script>
+    <title>Index</title>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </head>
 <body>
-    <div>
-        <input type="button" id="btn" value="Go" />
-        <canvas id="myChart" width="400" height="400"></canvas>
-    </div>
+    <h1>Charts using JSON & AJAX</h1>
+    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+
+    <script type="text/javascript">
+
+
+
+        function GetInvitationList() {
+
+
+            var dataPoints = [];
+            debugger
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                cache: false,
+                url: '/Home/FreeCurrency',
+
+
+                success: function (data) {
+                    debugger
+                    var json = JSON.parse(data);                           
+                    dataPoints.push({ label: json.data.CAD.code, y: parseInt(json.data.CAD.value) });
+                    dataPoints.push({ label: json.data.EUR.code, y: parseInt(json.data.EUR.value) });
+                    dataPoints.push({ label: json.data.USD.code, y: parseInt(json.data.USD.value) });
+                   
+
+
+                    {
+                        debugger
+                var chart = new CanvasJS.Chart("chartContainer", {
+                    animationEnabled: true,
+                    theme: "light2",//light1
+                    title: {
+                        text: "CanvasJS Charts in ASP.Net MVC using JSON & AJAX"
+                    },
+                    data: [
+                        {
+                            // Change type to "bar", "splineArea", "area", "spline", "pie",etc.
+                            type: "line",
+                            dataPoints: dataPoints
+                        }
+                    ]
+                });
+
+                chart.render();
+            }
+
+
+
+
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $(document).ready(function () {
+            GetInvitationList();
+            debugger
+            $.get("/home/FreeCurrency/", function (data) {
+                var chart = new CanvasJS.Chart("chartContainer", {
+                    animationEnabled: true,
+                    theme: "light2",//light1
+                    title: {
+                        text: "CanvasJS Charts in ASP.Net MVC using JSON & AJAX"
+                    },
+                    data: [
+                        {
+                            // Change type to "bar", "splineArea", "area", "spline", "pie",etc.
+                            type: "line",
+                            dataPoints: data
+                        }
+                    ]
+                });
+
+                chart.render();
+            });
+
+        });
+    </script>
 </body>
-</html>
+</html>	
