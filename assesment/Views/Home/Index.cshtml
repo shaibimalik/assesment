@@ -1,0 +1,54 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index59</title>
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            debugger
+            var ctx = $("#myChart");
+
+            var lineOptions = {
+                responsive: false
+            }
+
+            $("#btn").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "GetChartData",
+                    //data: "{}",
+                    dataType: "json",
+                    cache: true,
+                    success: function (Result) {
+                        //drawChart(JSON.stringify(Result.data));
+                        var ap = "dh";
+                        var chartInstance = new Chart(ctx,
+                            {
+                                type: 'line',
+                                data: Result.data,
+                                options: lineOptions
+                            });
+                    },
+                    error: function (Result) {
+                        alert("Error");
+                    }
+                });
+
+            })
+        })
+    </script>
+</head>
+<body>
+    <div>
+        <input type="button" id="btn" value="Go" />
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+</body>
+</html>
