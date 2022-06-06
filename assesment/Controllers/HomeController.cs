@@ -1,4 +1,5 @@
-﻿using assesment.Models;
+﻿using assesment.Helper;
+using assesment.Models;
 using assesment.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,26 +19,19 @@ namespace assesment.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        
-        public HomeController(ILogger<HomeController> logger)
+        public ICurrenceyRepository _currencyRepository;
+        public HomeController(ILogger<HomeController> logger,
+            ICurrenceyRepository currenceyRepository)
         {
             _logger = logger;
-           
-        
+            _currencyRepository = currenceyRepository;
+
         }
 
         public IActionResult Index()
         {
             return View();
-            //var client = new RestClient("https://api.currencyapi.com");
-            //var request = new RestRequest() {
-            //     Method = Method.Get,
-            //     Resource= "/v3/latest?apikey=IG5u9PqkFLugbHgRXo79eoGt4WUT8vcJ7RECLa8b&currencies=EUR%2CUSD%2CCAD"
-            //};
-            //var response = client.ExecuteGetAsync(request).Result;
-
-            //var content = response.Content;
-            //return Json(content);
+          
         }
 
 
@@ -51,47 +45,23 @@ namespace assesment.Controllers
             var request = new RestRequest()
             {
                 Method = Method.Get,
-                Resource = "/v3/latest?apikey=IG5u9PqkFLugbHgRXo79eoGt4WUT8vcJ7RECLa8b&currencies=EUR%2CUSD%2CCAD"
+                Resource = "/v3/latest?apikey=IG5u9PqkFLugbHgRXo79eoGt4WUT8vcJ7RECLa8b&currencies=EUR%2CUSD%2CCAD%2CPKR"
             };
             var response = client.ExecuteGetAsync(request).Result;
 
-          
-            var content = JsonConvert.DeserializeObject<JsonModel>(response.Content);
-
-         
-
-
-            
-
-           // var content = response.Content;
-            return Json(content);
-        }
-
-
-        public class XchangeRates
-        {
-
-            public ICurrenceyRepository _currencyRepository;
-            public XchangeRates(
-            ICurrenceyRepository currenceyRepository)
+            if (response.IsSuccessful)
             {
-                _currencyRepository = currenceyRepository;
+                var content = JsonConvert.DeserializeObject<JsonModel>(response.Content);
 
-            }
-
-           
-
-            public static void ConvertRates(Double Amount, Double ExchangeRate)
-            {
 
                 var resp = _currencyRepository.CurrencyGetValue();
 
 
-                Double AmountUSD = Amount*ExchangeRate;
+
 
 
                 CurrencyModel currencyModel = new CurrencyModel();
-                
+
 
                 for (int i = 0; i < resp.Data.Tables[0].Rows.Count; i++)
                 {
@@ -103,8 +73,8 @@ namespace assesment.Controllers
                         currencyModel.CurrencyName = (string)(resp.Data.Tables[0].Rows[i]["Currency"]);
                         currencyModel.AmountUSD = resp.Data.Tables[0].Rows[i]["AmountUSD"] is DBNull ? 0 : (double)(resp.Data.Tables[0].Rows[i]["AmountUSD"]);
                         currencyModel.AmountUserCurrency = resp.Data.Tables[0].Rows[i]["AmountUserCurrency"] is DBNull ? 0 : (double)(resp.Data.Tables[0].Rows[i]["AmountUserCurrency"]);
-                        XchangeRates.ConvertRates(currencyModel.Amount, content.data.CAD.value);
-
+                        XchangeRates.ConvertRates(currencyModel, content);
+                        _currencyRepository.CurrencyUpdateValue(currencyModel);
                     }
                     catch (Exception ex)
                     {
@@ -114,10 +84,13 @@ namespace assesment.Controllers
 
 
 
-
             }
+             var content1 = response.Content;
+            return Json(content1);
         }
 
+
+    
 
         public IActionResult Privacy()
         {

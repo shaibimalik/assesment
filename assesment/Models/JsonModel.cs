@@ -25,6 +25,7 @@ public class Data
     public CAD CAD { get; set; }
     public EUR EUR { get; set; }
     public USD USD { get; set; }
+    public PKR PKR { get; set; }
 }
 
 public class EUR
@@ -50,3 +51,8 @@ public class USD
     public int value { get; set; }
 }
 
+public class PKR
+{
+    public string code { get; set; }
+    public double value { get; set; }
+}

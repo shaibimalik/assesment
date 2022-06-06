@@ -20,7 +20,7 @@ namespace assesment.Repository
             _Configuration = configuration;
         }
 
-        public RepoResponse CurrencyUpdateValue()
+        public RepoResponse CurrencyUpdateValue(CurrencyModel currencyModel)
         {
 
 
@@ -29,9 +29,44 @@ namespace assesment.Repository
             RepoResponse repoResponse = new RepoResponse();
 
 
-            return repoResponse;
-        }
 
+
+
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+
+                SqlCommand cmd = new SqlCommand("[PRC_CURRENCY_ADD]", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", currencyModel.Id);
+                cmd.Parameters.AddWithValue("@AMOUNTUSD", currencyModel.AmountUSD);
+                cmd.Parameters.AddWithValue("@AMOUNTUSERCURRENCY", currencyModel.AmountUserCurrency);
+
+
+                Add_Output_Parameters(cmd);
+
+
+                try
+                {
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+
+
+                    repoResponse.Code = getPCode(cmd);
+                    repoResponse.Desc = getPDesc(cmd);
+                }
+                catch (Exception ex)
+                {
+                    string message = ex.Message;
+                    // throw the exception  
+                }
+                finally
+                {
+                    con.Close();
+                }
+
+                return repoResponse;
+            }
+        }
 
 
 

@@ -8,7 +8,7 @@ namespace assesment.Repository
 {
    public interface ICurrenceyRepository
     {
-        RepoResponse CurrencyUpdateValue();
+        RepoResponse CurrencyUpdateValue(CurrencyModel currencyModel);
 
         RepoResponse CurrencyGetValue();
 

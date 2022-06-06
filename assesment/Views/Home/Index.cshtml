@@ -11,7 +11,7 @@
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </head>
 <body>
-    <h1>Charts using JSON & AJAX</h1>
+    <h1>Currency Chart</h1>
     <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 
     <script type="text/javascript">
@@ -32,32 +32,32 @@
 
                 success: function (data) {
                     debugger
-                    var json = JSON.parse(data);                           
-                    dataPoints.push({ label: json.data.CAD.code, y: parseInt(json.data.CAD.value) });
-                    dataPoints.push({ label: json.data.EUR.code, y: parseInt(json.data.EUR.value) });
-                    dataPoints.push({ label: json.data.USD.code, y: parseInt(json.data.USD.value) });
-                   
+                    var json = JSON.parse(data);
 
+
+                    dataPoints.push({ label: json.data.USD.code, y: parseInt(json.data.USD.value) });
+
+                    dataPoints.push({ label: json.data.PKR.code, y: parseInt(json.data.PKR.value) });
 
                     {
                         debugger
-                var chart = new CanvasJS.Chart("chartContainer", {
-                    animationEnabled: true,
-                    theme: "light2",//light1
-                    title: {
-                        text: "CanvasJS Charts in ASP.Net MVC using JSON & AJAX"
-                    },
-                    data: [
-                        {
-                            // Change type to "bar", "splineArea", "area", "spline", "pie",etc.
-                            type: "line",
-                            dataPoints: dataPoints
-                        }
-                    ]
-                });
+                        var chart = new CanvasJS.Chart("chartContainer", {
+                            animationEnabled: true,
+                            theme: "light2",//light1
+                            title: {
+                                text: "Chart JS"
+                            },
+                            data: [
+                                {
+                                    // Change type to "bar", "splineArea", "area", "spline", "pie",etc.
+                                    type: "line",
+                                    dataPoints: dataPoints
+                                }
+                            ]
+                        });
 
-                chart.render();
-            }
+                        chart.render();
+                    }
 
 
 
@@ -66,42 +66,28 @@
             });
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         $(document).ready(function () {
-            GetInvitationList();
-            debugger
-            $.get("/home/FreeCurrency/", function (data) {
-                var chart = new CanvasJS.Chart("chartContainer", {
-                    animationEnabled: true,
-                    theme: "light2",//light1
-                    title: {
-                        text: "CanvasJS Charts in ASP.Net MVC using JSON & AJAX"
-                    },
-                    data: [
-                        {
-                            // Change type to "bar", "splineArea", "area", "spline", "pie",etc.
-                            type: "line",
-                            dataPoints: data
-                        }
-                    ]
-                });
-
-                chart.render();
-            });
+           
+            startTimer()
 
         });
     </script>
+
+    <script>
+        var timer;
+
+        function startTimer() {
+            timer = setInterval(function () {
+                GetInvitationList();
+            }, 35000);
+        }
+
+        function stopTimer() {
+            alert("Timer stopped");
+            clearInterval(timer);
+        }
+    </script>
+
+
 </body>
 </html>	
